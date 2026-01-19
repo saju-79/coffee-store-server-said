@@ -47,7 +47,17 @@ async function run() {
 
       })
      
-
+    app.put("/users/:id" ,  async(req , res) =>{
+        const id = req.params.id;
+        const query= {_id :new ObjectId(id)};
+        const user =req.body;
+         const updateDocs ={
+            $set:user
+         }
+          const options = { upsert: true };
+         const result =await dataCollection.updateOne(query , updateDocs , options);
+         res.send(result)
+    })
 
 
 
