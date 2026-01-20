@@ -22,6 +22,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
       const dataCollection = client.db("coffees").collection("coffee");
+      const userCollection = client.db("coffees").collection("data");
       app.post("/users" , async(req ,res) =>{
         const coffee = req.body;
         const result =  await dataCollection.insertOne(coffee);
@@ -59,9 +60,42 @@ async function run() {
          res.send(result)
     })
 
+    app.post("/datas" , async (req , res)=>{
+      const data = req.body;
+      const result =  await userCollection.insertOne(data)
+      res.send(result)
+    })
+   app.get("/datas" ,async (req , res) =>{
+        const result = await userCollection.find().toArray()
+        res.send(result)
+   })
+  //  single data update using patch
+  app.patch("/datas" , async (req , res) =>{
+    const {email ,lastSignInTime} =req.body; 
+    const quiry = {email:email};
+    const update ={
+               $set:{
+                    lastSignInTime:lastSignInTime
+                }
+    }
 
+    const result =await userCollection.updateOne(quiry , update)
+    res.send(result)
+  });
+  //  maltipale data update using put
+  app.put("/datas" , async (req , res) =>{
+    const {email ,lastSignInTime , photo } =req.body; 
+    const qeuiry = {email:email};
+    const updatedata ={
+               $set:{
+                    lastSignInTime:lastSignInTime,
 
+                }
+    }
 
+    const result =await userCollection.updateOne(qeuiry , updatedata)
+    res.send(result)
+  })
 
 
 
